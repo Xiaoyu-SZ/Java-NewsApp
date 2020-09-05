@@ -1,16 +1,13 @@
-package com.example.myapplication.ui.gallery;
-
+package com.example.myapplication.ui.collection;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-public class GalleryViewModel extends ViewModel {
-
+public class CollectionViewModel extends ViewModel{
     private MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public CollectionViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("测试");
+        mText.setValue("这是收藏夹");
     }
 
     public LiveData<String> getText() {

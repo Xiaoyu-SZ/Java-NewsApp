@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
+public class BaseActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     protected DrawerLayout drawer;
@@ -41,22 +40,15 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         drawer = findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        navigationView = (NavigationView)findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        Log.v("created","mainactivity");
-  //      LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //      LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //inflate your activity layout here!
 
         // Passing each menu ID as a set of Ids because each
@@ -85,7 +77,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         searchView.setQueryRefinementEnabled(true); // 提示内容右边提供一个将提示内容放到搜索框的按钮
         return true;
     }
-   /*
+    /*
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -98,17 +90,13 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_history) {
-           // startActivity(new Intent(getApplicationContext(), FirstActivity.class));
-           startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
-           overridePendingTransition(0,0);
+            // startActivity(new Intent(getApplicationContext(), FirstActivity.class));
+            Toast.makeText(getApplicationContext(), "你点了历史记录",
+                    Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_collection) {
             Toast.makeText(getApplicationContext(), "你点了收藏",
                     Toast.LENGTH_SHORT).show();
             // startActivity(new Intent(getApplicationContext(), SecondActivity.class));
-        }
-        else if(id==R.id.nav_home){
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-            overridePendingTransition(0,0);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
