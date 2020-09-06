@@ -16,8 +16,11 @@ public class news extends SugarRecord {
     public String context ;
     public String source ;
 
-    news(){};
-    news(String _id,String _type,String _title,String _category,String _time,String _lang,float _influence,String _context,boolean _cached){
+
+    news(){}
+
+    public news(String _id, String _type, String _title, String _category, String _time, String _lang, float _influence, String _context, boolean _cached,String _source){
+
         uid = _id ;
         type = _type ;
         title = _title ;
@@ -27,6 +30,7 @@ public class news extends SugarRecord {
         influence = _influence;
         cached = false ;
         context = _context ;
+        source = _source;
     }
 
 
