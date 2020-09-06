@@ -276,12 +276,13 @@ public class newsmanager {
 
             final String[] json = new String[1];
 
+
+
             OkHttpClient okHttpClient = new OkHttpClient();
             final Request request = new Request.Builder()
                     .url("https://covid-dashboard.aminer.cn/api/events/list?type=" + type + "&page=" + pagenumber.toString() + "&size=20")
                     .build();
             final Call call = okHttpClient.newCall(request);
-
 
             try {
                 Response response = call.execute();
@@ -323,7 +324,9 @@ public class newsmanager {
 
             catch(Exception e){
                 System.out.println(e);
+
             }
+
             this.number_start = this.number_start-count ;
         }
     }
@@ -367,7 +370,9 @@ public class newsmanager {
             try {
                 JSONObject jobj2 = parsejson("https://covid-dashboard-api.aminer.cn/event/"+id);
                 JSONObject jobj = (JSONObject) jobj2.get("data");
+
                 news News = new news(get(jobj,"_id","").toString(),get(jobj,"title","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),true,get(jobj,"source","").toString());
+
                 News.save();
                 return News ;
 
@@ -382,3 +387,4 @@ public class newsmanager {
 
     }
 }
+
