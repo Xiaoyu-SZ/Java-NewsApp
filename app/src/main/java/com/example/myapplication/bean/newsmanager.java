@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import okhttp3.Call;
@@ -18,10 +19,13 @@ import okhttp3.Response;
 import static java.lang.Integer.min;
 
 public class newsmanager {
+
     public int number_start ;
     public int number_end ;
     public String type ;
     public ArrayList<news> newslist ;//越新越靠前
+    public int count ;
+    public int total ;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public newsmanager(String _type) {
@@ -33,10 +37,10 @@ public class newsmanager {
         catch(Exception e){
             System.out.println("Initialze News Failed in newshandler Construct");
         }
-    };
+    }
 
 
-    private JSONObject parsejson(String url) throws JSONException {
+    static private JSONObject parsejson(String url) throws JSONException {
         final String[] json = new String[1];
         //            URL urlObject = new URL(url);
 //            HttpURLConnection uc = (HttpURLConnection) urlObject
@@ -56,18 +60,20 @@ public class newsmanager {
                 .url(url)
                 .build();
         final Call call = okHttpClient.newCall(request);
-        new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    Response response = call.execute();
-                    json[0] = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        Response response = null;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            json[0] = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         //        System.out.println(json.toString());
         try {
             while(json[0] == null){
@@ -86,7 +92,7 @@ public class newsmanager {
 
     private int getlen(){
         try {
-            JSONObject jobj = parsejson("https://covid-dashboard.aminer.cn/api/events/list?type=" + type + "&page=10000&size=100");//TODO确定溢出
+            JSONObject jobj = parsejson("https://covid-dashboard.aminer.cn/api/events/list?type=" + type + "&page=10000&size=20");//TODO确定溢出
             JSONObject jobj2 = (JSONObject) jobj.get("pagination");
             return (int) jobj2.get("total");
 
@@ -98,7 +104,7 @@ public class newsmanager {
 
     }
 
-    private Object get(JSONObject jobj,String key,Object other){
+    static private Object get(JSONObject jobj,String key,Object other){
         try {
             Object ans =  jobj.get(key);
             if(ans.equals(null)){
@@ -115,6 +121,20 @@ public class newsmanager {
 
     }
 
+    private boolean check_cached(String id){
+        ArrayList<news> NEWS;
+        List<news> books = news.listAll(news.class);
+        try{
+            NEWS = (ArrayList<news>) news.find(news.class, "uid = ? ", id);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false ;
+        }
+        return true ;
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void addlist_at_tail(JSONObject json, int start, int end){
         try {
@@ -123,8 +143,9 @@ public class newsmanager {
 
             for(int i = start ; i < min(end,list.length());i++){
                 JSONObject jobj = (JSONObject) list.get(i);
-                news News = new news(get(jobj,"_id","").toString(),type,get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),false);
+                news News = new news(get(jobj,"_id","").toString(),type,get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),check_cached(get(jobj,"_id","").toString()),get(jobj,"source","").toString());
                 newslist.add(News);
+                count+= 1;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -229,14 +250,84 @@ public class newsmanager {
 
         catch(Exception e){
             System.out.println(e);
-        };
+        }
 
         number_end = newlen;
-        number_start = number_end-19 ;
+        number_start = number_end-20 ;
 
 
 
     }
+    public Integer calculate_pagenumber(int len){
+        return ((total-number_start)/len)+1;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    synchronized public void getmore(){
+        newslist.clear();
+        total = number_end;
+        count = 0 ;
+        //TODO:确定一下多线程
+        while (true) {
+            if (number_start <= 0 || count >= 20) {
+                return;
+            }
+            Integer pagenumber = calculate_pagenumber(20);
+
+
+            final String[] json = new String[1];
+
+            OkHttpClient okHttpClient = new OkHttpClient();
+            final Request request = new Request.Builder()
+                    .url("https://covid-dashboard.aminer.cn/api/events/list?type=" + type + "&page=" + pagenumber.toString() + "&size=20")
+                    .build();
+            final Call call = okHttpClient.newCall(request);
+
+
+            try {
+                Response response = call.execute();
+                json[0] = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            JSONObject jsonobj = null ;
+            try {
+                jsonobj = new JSONObject(json[0]);//TODO:替换成速度更快的方式
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println("Fail in get jsonobj when refresh");
+            }
+
+            JSONObject jobj2 = null;
+            int newtotal = 0 ;
+            try {
+                jobj2 = (JSONObject) jsonobj.get("pagination");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                newtotal = (int) jobj2.get("total");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println("Fail in get jsonobj when refresh");
+            }
+
+            if(newtotal != total){
+                total= newtotal ;
+                continue ;
+            }
+            try {
+                addlist_at_tail(jsonobj,(total-number_start)%20,20);
+
+            }
+
+            catch(Exception e){
+                System.out.println(e);
+            }
+            this.number_start = this.number_start-count ;
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void initialize() throws IOException, JSONException {
@@ -259,6 +350,35 @@ public class newsmanager {
 //            System.out.println("Initialze News Failed in newshandler");
 //        }
 //        return ;
+
+    }
+    static public news loadorstore(String id){
+        ArrayList<news> NEWS;
+        List<news> books = news.listAll(news.class);
+        try{
+            NEWS = (ArrayList<news>) news.find(news.class, "uid = ? ", id);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            NEWS = new ArrayList<news>() ;
+        }
+
+        if(NEWS.equals(null) || NEWS.size() == 0){
+            try {
+                JSONObject jobj2 = parsejson("https://covid-dashboard-api.aminer.cn/event/"+id);
+                JSONObject jobj = (JSONObject) jobj2.get("data");
+                news News = new news(get(jobj,"_id","").toString(),get(jobj,"title","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),true,get(jobj,"source","").toString());
+                News.save();
+                return News ;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null ;
+            }
+        }
+        else{
+            return NEWS.get(0);
+        }
 
     }
 }
