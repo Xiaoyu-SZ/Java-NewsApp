@@ -5,7 +5,7 @@ import com.orm.dsl.Table;
 
 
 public class news extends SugarRecord {
-    public String id ;
+    public String uid ;
     public String type ;
     public String title ;
     public String category ;
@@ -18,7 +18,7 @@ public class news extends SugarRecord {
 
     news(){};
     news(String _id,String _type,String _title,String _category,String _time,String _lang,float _influence,String _context,boolean _cached){
-        id = _id ;
+        uid = _id ;
         type = _type ;
         title = _title ;
         category = _category ;

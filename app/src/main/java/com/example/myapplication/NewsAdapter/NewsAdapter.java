@@ -1,25 +1,25 @@
 package com.example.myapplication.NewsAdapter;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.bean.news;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
-    private ArrayList<String> mDataset;
+    private ArrayList<news> mDataset;
     private OnItemClickListener   mOnItemClickListener;
+    private int normalType = 0;     // 第一种ViewType，正常的item
+    private int footType = 1;       // 第二种ViewType，底部的提示View
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
     }
@@ -45,22 +45,30 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         }
     }
 
+
     // Provide a suitable constructor (depends on the kind of dataset)
-    public NewsAdapter(ArrayList<String> myDataset) {
-        mDataset = myDataset;
+    public NewsAdapter(ArrayList<news> myDataset) {
+        mDataset=new ArrayList<>();
+        myDataset.addAll(myDataset);
         Log.v("created","adapter");
     }
-
+    public void SetData(ArrayList<news> newsdata){
+        mDataset.clear();
+        mDataset.addAll(newsdata);
+    }
+    public void Add(news News){mDataset.add(News);}
+    public void AddData(ArrayList<news> newsdata) {
+        mDataset.addAll(newsdata);
+    }
     // Create new views (invoked by the layout manager)
     @Override
-    public NewsAdapter.NewsViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public NewsViewHolder onCreateViewHolder(ViewGroup parent,
+                                             int viewType) {
         // create a new view
         Log.v("creating","view");
         NewsViewHolder holder = new NewsViewHolder(LayoutInflater.from(
                 parent.getContext()).inflate(R.layout.news_result_list_item, parent,
                 false));
-        Log.v("created","view");
         return holder;
     }
 
@@ -69,7 +77,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public void onBindViewHolder(NewsViewHolder holder,final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.title.setText(mDataset.get(position));
+        holder.title.setText(mDataset.get(position).title);
+        if(mDataset.get(position).cached){
+            holder.title.setTextColor(Resources.getSystem().getColor(R.color.visited_news));
+        }
+        else{
+            holder.title.setTextColor(Resources.getSystem().getColor(R.color.unvisited_news));
+        }
         if (mOnItemClickListener != null) {
             holder.cv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,12 +93,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             });
         }
     }
-
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
     }
-
+    public news getNewsbyPos(int position){return mDataset.get(position);}
 }
 

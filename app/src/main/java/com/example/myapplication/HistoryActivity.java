@@ -37,12 +37,14 @@ public class HistoryActivity extends MainActivity{
             }
         });
         HistoryViewModel model = new ViewModelProvider(this).get(HistoryViewModel.class);
+        /*
         recyclerView=contentView.findViewById(R.id.news_rv);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         newsAdapter = new NewsAdapter(model.getNewsdata());
         recyclerView.setAdapter(newsAdapter);
+         */
         Log.v("created","historyactivity");
     }
 }

@@ -7,4 +7,6 @@
     <color name="container_background">#EBEBEB</color>
     <color name="primary_text">#de000000</color>
     <color name="secondary_text">#8a000000</color>
+    <color name="unvisited_news">#de000000</color>
+    <color name="visited_news">#808080</color>
 </resources>
