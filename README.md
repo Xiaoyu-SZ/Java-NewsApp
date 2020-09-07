@@ -1,6 +1,8 @@
 ﻿# 易情：新闻APP
 ## Java
 清华大学2020java小学期大作业：疫情相关的安卓新闻app。Developed by Eva Tang, Xiaoyu Zhang.
+
+
 本app提供：
 * 新闻在线/离线浏览、搜索
 正在开发：
