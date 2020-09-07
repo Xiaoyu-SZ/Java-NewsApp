@@ -1,11 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'com.android.application'
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.myapplication"
+        applicationId "com.java.tangningjing"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -44,5 +50,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    implementation 'com.yalantis:flipviewpager:1.0.0'
 
 }

@@ -14,5 +14,5 @@
         android:layout_height="?attr/listPreferredItemHeight"
         android:gravity="center_vertical"
         android:padding="8dp"
-        style="@style/Base.TextAppearance.AppCompat.Body2"/>
+        android:textSize="@dimen/abc_text_size_body_2_material" />
 </androidx.cardview.widget.CardView>
