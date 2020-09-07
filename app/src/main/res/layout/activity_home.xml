@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -7,7 +7,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
    <!-- tools:context=".ui.home.HomeFragment" -->
-    <include layout="@layout/news_result_recycler"/>
+    <HorizontalScrollView
+        android:id="@+id/hs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="?attr/actionBarSize">
+        <LinearLayout
+            android:id="@+id/liner"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp">
+        </LinearLayout>
+    </HorizontalScrollView>
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/hs">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/news_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1234"
+            android:clipToPadding="false" />
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
     <!--
     <TextView
         android:id="@+id/text_home"
@@ -23,4 +47,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
         -->
-</androidx.constraintlayout.widget.ConstraintLayout>
+</android.widget.RelativeLayout>
