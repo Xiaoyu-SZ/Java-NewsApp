@@ -21,8 +21,6 @@ import static android.graphics.Color.BLUE;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
     private ArrayList<news> mDataset;
     private OnItemClickListener   mOnItemClickListener;
-    private int normalType = 0;     // 第一种ViewType，正常的item
-    private int footType = 1;       // 第二种ViewType，底部的提示View
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
     }
@@ -51,7 +49,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             return title;
         }
     }
-
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public NewsAdapter(ArrayList<news> myDataset) {

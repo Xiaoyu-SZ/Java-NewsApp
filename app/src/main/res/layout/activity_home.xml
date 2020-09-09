@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
    <!-- tools:context=".ui.home.HomeFragment" -->
+    <!--
     <HorizontalScrollView
         android:id="@+id/hs"
         android:layout_width="match_parent"
@@ -19,11 +20,12 @@
             android:layout_height="50dp">
         </LinearLayout>
     </HorizontalScrollView>
+    -->
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/hs">
+        android:paddingTop="?attr/actionBarSize">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/news_rv"

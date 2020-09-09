@@ -61,7 +61,7 @@ public class SearchResultActivity extends MainActivity{
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //inflate your activity layout here!
         @SuppressLint("InflateParams")
-        View contentView = inflater.inflate(R.layout.activity_home, null, false);
+        View contentView = inflater.inflate(R.layout.searchresult_layout, null, false);
         drawer.addView(contentView, 0);
         // Get the intent, verify the action and get the query
         recyclerView=contentView.findViewById(R.id.news_rv);
@@ -134,6 +134,8 @@ public class SearchResultActivity extends MainActivity{
         //refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
         //  android.R.color.holo_orange_light, android.R.color.holo_green_light);
         // refreshLayout.setOnRefreshListener(this);
+
+        refreshLayout.setEnableRefresh(false);
         refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onLoadMore(final TwinklingRefreshLayout refreshLayout){

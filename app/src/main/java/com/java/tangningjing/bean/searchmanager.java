@@ -144,9 +144,10 @@ public class searchmanager {
                 if(!contain){//不包含
 
                     continue ;
+
                 }
                 JSONObject jobj = (JSONObject) list.get(i);
-                news News = new news(get(jobj,"_id","").toString(),get(jobj,"type","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),false,get(jobj,"source","").toString());
+                news News = new news(get(jobj,"_id","").toString(),get(jobj,"type","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),get(jobj,"content","").toString(),false,get(jobj,"source","").toString());
                 newslist.add(News);
                 count++ ;
             }

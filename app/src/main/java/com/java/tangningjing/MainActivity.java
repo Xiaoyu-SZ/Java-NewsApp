@@ -101,7 +101,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         int id = item.getItemId();
         if (id == R.id.nav_history) {
            // startActivity(new Intent(getApplicationContext(), FirstActivity.class));
-           startActivity(new Intent(getApplicationContext(), TestActivity.class));
+            Toast.makeText(getApplicationContext(), "你点了测试",
+                    Toast.LENGTH_SHORT).show();
+           startActivity(new Intent(getApplicationContext(), HomenewActivity.class));
            overridePendingTransition(0,0);
         } else if (id == R.id.nav_collection) {
             Toast.makeText(getApplicationContext(), "你点了收藏",

@@ -143,8 +143,9 @@ public class newsmanager {
 
             for(int i = start ; i < min(end,list.length());i++){
                 JSONObject jobj = (JSONObject) list.get(i);
-                news News = new news(get(jobj,"_id","").toString(),type,get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),check_cached(get(jobj,"_id","").toString()),get(jobj,"source","").toString());
+                news News = new news(get(jobj,"_id","").toString(),type,get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),get(jobj,"content","").toString(),check_cached(get(jobj,"_id","").toString()),get(jobj,"source","").toString());
                 newslist.add(News);
+                this.number_start-=1 ;
                 count+= 1;
             }
         } catch (JSONException e) {
@@ -385,7 +386,7 @@ public class newsmanager {
             catch(Exception e){
                 System.out.println(e);
             }
-            this.number_start = this.number_start-count ;
+
         }
     }
 
@@ -428,7 +429,7 @@ public class newsmanager {
             try {
                 JSONObject jobj2 = parsejson("https://covid-dashboard-api.aminer.cn/event/"+id);
                 JSONObject jobj = (JSONObject) jobj2.get("data");
-                news News = new news(get(jobj,"_id","").toString(),get(jobj,"title","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),(float)get(jobj,"influence",0.f),get(jobj,"content","").toString(),true,get(jobj,"source","").toString());
+                news News = new news(get(jobj,"_id","").toString(),get(jobj,"type","").toString(),get(jobj,"title","").toString(),get(jobj,"category","").toString(),get(jobj,"time","").toString(),get(jobj,"lang","").toString(),get(jobj,"content","").toString(),true,get(jobj,"source","").toString());
                 News.save();
                 return News ;
 

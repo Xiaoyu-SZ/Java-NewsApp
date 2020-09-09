@@ -120,7 +120,7 @@ public class HomeActivity extends MainActivity {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initNewsManager(){
-                newsManager = new newsmanager("news");
+        newsManager = new newsmanager("paper");
     }
     private void initRecyclerview(){
         recyclerView.setHasFixedSize(true);
@@ -141,8 +141,8 @@ public class HomeActivity extends MainActivity {
     }
     private void initRefreshLayout() {
         //refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
-              //  android.R.color.holo_orange_light, android.R.color.holo_green_light);
-       // refreshLayout.setOnRefreshListener(this);
+        //  android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        // refreshLayout.setOnRefreshListener(this);
         refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
@@ -154,7 +154,7 @@ public class HomeActivity extends MainActivity {
                         newsManager.refresh(HomeActivity.this);
                         newsAdapter.SetData(newsManager.newslist) ;
                         messageHandler.sendEmptyMessage(1);
-                }
+                    }
                 }.start();
             }
 
@@ -204,42 +204,41 @@ public class HomeActivity extends MainActivity {
             }
         }.start();
     }
-
      */
 
-                        public class MyAsyncTask extends AsyncTask<String, Integer, ArrayList<news>> {
-                            @RequiresApi(api = Build.VERSION_CODES.N)
-                            @Override
-                            protected ArrayList<news> doInBackground(String... strings) {
-                                newsManager.refresh(HomeActivity.this);
-                                return newsManager.newslist;
-                            }
+    public class MyAsyncTask extends AsyncTask<String, Integer, ArrayList<news>> {
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected ArrayList<news> doInBackground(String... strings) {
+            newsManager.refresh(HomeActivity.this);
+            return newsManager.newslist;
+        }
 
-                            @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
-                                progressDialog.show();
-                                //    在onPreExecute()中我们让ProgressDialog显示出来
-                                //progressDialog.show();
-                            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+            //    在onPreExecute()中我们让ProgressDialog显示出来
+            //progressDialog.show();
+        }
 
-                            @RequiresApi(api = Build.VERSION_CODES.N)
+        @RequiresApi(api = Build.VERSION_CODES.N)
 
 
-                            @Override
-                            protected void onProgressUpdate(Integer... values) {
-                                super.onProgressUpdate(values);
-                            }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
 
-                            @Override
-                            protected void onPostExecute(ArrayList<news> result) {
-                                super.onPostExecute(result);
-                                //    将doInBackground方法返回的byte[]解码成要给Bitmap
-                                newsAdapter.SetData(newsManager.newslist);
-                                newsAdapter.notifyDataSetChanged();
-                                //Log.v("listsize",String.valueOf(model.getNewsSize()));
-                                progressDialog.dismiss();
+        @Override
+        protected void onPostExecute(ArrayList<news> result) {
+            super.onPostExecute(result);
+            //    将doInBackground方法返回的byte[]解码成要给Bitmap
+            newsAdapter.SetData(newsManager.newslist);
+            newsAdapter.notifyDataSetChanged();
+            //Log.v("listsize",String.valueOf(model.getNewsSize()));
+            progressDialog.dismiss();
 
-                            }
-                        }
+        }
+    }
 }
