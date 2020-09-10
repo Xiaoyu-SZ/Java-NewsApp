@@ -218,7 +218,11 @@ public class newsmanager {
             e.printStackTrace();
             List<news> books = news.listAll(news.class);
             newslist.clear();
-            newslist = (ArrayList<news>) books;
+            for(news book : books){
+                if(book.type.equals(this.type)){
+                    newslist.add(book);
+                }
+            }
             return false;
         }
 
@@ -348,7 +352,11 @@ public class newsmanager {
                 e.printStackTrace();
                 List<news> books = news.listAll(news.class);
                 newslist.clear();
-                newslist = (ArrayList<news>) books;
+                for(news book : books){
+                    if(book.type.equals(this.type)){
+                        newslist.add(book);
+                    }
+                }
                 return false;
             }
 
@@ -441,6 +449,15 @@ public class newsmanager {
         else{
             return NEWS.get(0);
         }
-
+    }
+    public ArrayList<news> getviewed(Context context){
+        List<news> books = news.listAll(news.class);
+        ArrayList<news> result =new ArrayList<>();
+        for(news book : books){
+            if(book.type.equals(this.type)){
+                result.add(book);
+            }
+        }
+        return (ArrayList<news>) result;
     }
 }

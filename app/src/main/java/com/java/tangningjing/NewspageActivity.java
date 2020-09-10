@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,12 +26,16 @@ import com.java.tangningjing.NewsAdapter.NewsAdapter;
 import com.java.tangningjing.bean.news;
 import com.java.tangningjing.bean.newsmanager;
 import com.java.tangningjing.ui.home.HomeViewModel;
+import com.mob.MobSDK;
 import com.orm.SugarContext;
 import com.orm.util.SugarConfig;
+
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 public class NewspageActivity extends MainActivity {
     TextView newscontent;
     news current;
+    TextView newstitle;
     int pos=0;
     @SuppressLint("HandlerLeak")
     private final Handler messageHandler = new Handler();
@@ -38,6 +43,7 @@ public class NewspageActivity extends MainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SugarContext.init(this);
+        MobSDK.submitPolicyGrantResult(true, null);
         Intent intent = getIntent();
         final String newsid = intent.getStringExtra("uid");
         pos=intent.getIntExtra("position",0);
@@ -47,6 +53,24 @@ public class NewspageActivity extends MainActivity {
         View contentView = inflater.inflate(R.layout.fragment_newspage, null, false);
         drawer.addView(contentView, 0);
         newscontent=contentView.findViewById(R.id.newscontent);
+        newstitle=contentView.findViewById(R.id.newstitle);
+        ((Button)(contentView.findViewById(R.id.shareButton))).setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+//                OnekeyShare oks = new OnekeyShare();
+//                oks.setTitle("分享");
+//                oks.setText("我是分享文本");
+//               // oks.setTitleUrl("http://sharesdk.cn");
+//                oks.show(MobSDK.getContext());
+                Intent intent;
+                intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, newstitle.getText().toString()+"  内容:"+newscontent.getText().toString().substring(0,10)+"...");
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, "分享到..."));
+            }
+        });
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -69,6 +93,7 @@ public class NewspageActivity extends MainActivity {
                     @Override
                     public void run() {
                         newscontent.setText(current.context);
+                        newstitle.setText(current.title);
                     }
                 });
             }

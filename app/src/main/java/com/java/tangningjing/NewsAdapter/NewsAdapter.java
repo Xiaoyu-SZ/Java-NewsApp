@@ -21,6 +21,7 @@ import static android.graphics.Color.BLUE;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
     private ArrayList<news> mDataset;
     private OnItemClickListener   mOnItemClickListener;
+    boolean ishistory;
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
     }
@@ -53,6 +54,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     // Provide a suitable constructor (depends on the kind of dataset)
     public NewsAdapter(ArrayList<news> myDataset) {
         mDataset=new ArrayList<>();
+        ishistory=false;
+        myDataset.addAll(myDataset);
+        Log.v("created","adapter");
+    }
+    public NewsAdapter(ArrayList<news> myDataset,boolean history) {
+        mDataset=new ArrayList<>();
+        ishistory=history;
         myDataset.addAll(myDataset);
         Log.v("created","adapter");
     }
@@ -84,7 +92,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public void onBindViewHolder(NewsViewHolder holder,final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(mDataset.get(position).cached){
+        if(!ishistory&&mDataset.get(position).cached){
             holder.title.setTextColor(BLUE);
         }
         else{

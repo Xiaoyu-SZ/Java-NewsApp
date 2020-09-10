@@ -46,8 +46,14 @@ public class NewspageFragment extends Fragment {
     private TwinklingRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private String type;
+    private boolean ishistory;
     public NewspageFragment(String type){
         this.type=type;
+        ishistory=false;
+    }
+    public NewspageFragment(String type,boolean history){
+        this.type=type;
+        ishistory=true;
     }
     private final Handler messageHandler = new Handler() {
         @SuppressLint("HandlerLeak")
@@ -61,6 +67,9 @@ public class NewspageFragment extends Fragment {
                     break;
                 case 2:
                     newsAdapter.notifyDataSetChanged();
+                    refreshLayout.finishLoadmore();
+                    break;
+                case 3:
                     refreshLayout.finishLoadmore();
                     break;
                 default:
@@ -78,12 +87,16 @@ public class NewspageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news_list, container, false);
+        //news.deleteAll(news.class);
         refreshLayout = (TwinklingRefreshLayout) root.findViewById(R.id.refreshLayout);
         recyclerView=(RecyclerView) root.findViewById(R.id.news_rv);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        newsAdapter = new NewsAdapter(new ArrayList<news>());
+        if(!ishistory) {newsAdapter= new NewsAdapter(new ArrayList<news>());}
+        else{
+            newsAdapter=new NewsAdapter(new ArrayList<news>(),true);
+        }
         newsAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -94,44 +107,65 @@ public class NewspageFragment extends Fragment {
                 startActivityForResult(intent,0);  //result会回到fragment
             }
         });
-        recyclerView.setAdapter(newsAdapter);
         newsManager=new newsmanager(type);
+        recyclerView.setAdapter(newsAdapter);
+//        if(ishistory) {
+//           // refreshLayout.setEnableRefresh(false);
+//            //refreshLayout.setEnableLoadmore(false);
+//            newsAdapter.SetData(newsManager.getviewed(getActivity()));
+//           // newsAdapter.notifyDataSetChanged();
+//        }
         //init refresh
-        refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
-            @Override
-            public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
-                new Thread() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void run() {//在run()方法实现业务逻辑；
-                        //...
-                        newsManager.refresh(getActivity());
-                        newsAdapter.SetData(newsManager.newslist) ;
-                        messageHandler.sendEmptyMessage(1);
-                        Log.v("test","refreshing");
-                    }
-                }.start();
-            }
-            @Override
-            public void onLoadMore(final TwinklingRefreshLayout refreshLayout){
-                new Thread() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void run() {//在run()方法实现业务逻辑；
-                        Log.v("test","Loading");
-                        if(newsManager.getmore(getActivity())) {
-                            ArrayList<news> test;
-                            for (int i = 0; i < 20; i++) {
-                                newsAdapter.Add(newsManager.newslist.get(i));
+        if(true) {
+            refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+                @Override
+                public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
+                    if (!ishistory) {
+                        new Thread() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
+                            @Override
+                            public void run() {//在run()方法实现业务逻辑；
+                                //...
+                                newsManager.refresh(getActivity());
+                                newsAdapter.SetData(newsManager.newslist);
+                                messageHandler.sendEmptyMessage(1);
+                                Log.v("test", "refreshing");
                             }
-                            // newsAdapter.AddData(newsManager.newslist);
-                            //更新UI操作；
-                            messageHandler.sendEmptyMessage(2);
-                        }
+                        }.start();
+                    } else {
+                        newsAdapter.SetData(newsManager.getviewed(getActivity()));
+                        //messageHandler.sendEmptyMessage(1);
+                        messageHandler.sendEmptyMessage(1);
                     }
-                }.start();
-            }
-        });
+                }
+
+                @Override
+                public void onLoadMore(final TwinklingRefreshLayout refreshLayout) {
+                    if (!ishistory) {
+                        new Thread() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
+                            @Override
+                            public void run() {//在run()方法实现业务逻辑；
+                                Log.v("test", "Loading");
+                                if (newsManager.getmore(getActivity())) {
+                                    ArrayList<news> test;
+                                    for (int i = 0; i < 20; i++) {
+                                        newsAdapter.Add(newsManager.newslist.get(i));
+                                    }
+                                    // newsAdapter.AddData(newsManager.newslist);
+                                    //更新UI操作；
+                                    messageHandler.sendEmptyMessage(2);
+                                }
+                            }
+                        }.start();
+                    }
+                    else{
+                        messageHandler.sendEmptyMessage(3);
+                    }
+                }
+            });
+            refreshLayout.startRefresh();
+        }
         return root;
     }
 
@@ -146,6 +180,14 @@ public class NewspageFragment extends Fragment {
             }
         }
       //  super.onActivityResult(requestCode, resultCode, data);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setManager(String type){
+        newsManager=new newsmanager(type);
+    }
+
+    public void Refresh(){
+        refreshLayout.startRefresh();
     }
 
 }

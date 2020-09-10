@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.java.tangningjing.NewsAdapter.NewsAdapter;
+import com.java.tangningjing.bean.datamanager;
 import com.java.tangningjing.bean.news;
 import com.java.tangningjing.bean.newsmanager;
 import com.java.tangningjing.ui.home.HomeViewModel;
@@ -78,6 +79,17 @@ public class HomeActivity extends MainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        final datamanager manager=new datamanager();
+//        new Thread() {
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @Override
+//            public void run() {//在run()方法实现业务逻辑；
+//                //...
+//                manager.getalldata();
+//                Toast.makeText(getApplicationContext(), "下载完毕",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        }.start();
         progressDialog = new ProgressDialog(HomeActivity.this);
         progressDialog.setMessage("正在下载中，请稍后......");
 //    设置setCancelable(false); 表示我们不能取消这个弹出框，等下载完成之后再让弹出框消失
@@ -93,17 +105,30 @@ public class HomeActivity extends MainActivity {
         navigationView.setCheckedItem(R.id.nav_home);
         model = new ViewModelProvider(this).get(HomeViewModel.class);
         model.setList(newsManager.newslist);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new MyAsyncTask().execute("");
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                new MyAsyncTask().execute("");
+//            }
+//        });
         recyclerView=contentView.findViewById(R.id.news_rv);
         refreshLayout = (TwinklingRefreshLayout) contentView.findViewById(R.id.refreshLayout);
         initRecyclerview();
         initRefreshLayout();
         SugarContext.init(this);
+//        final datamanager manager=new datamanager();
+//        new Thread() {
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @Override
+//            public void run() {//在run()方法实现业务逻辑；
+//                //...
+//                manager.getalldata();
+//                Toast.makeText(getApplicationContext(), "下载完毕",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        }.start();
+       MyAsyncTask task=new MyAsyncTask();
+       task.execute();
         Log.v("created","homeactivity");
     }
     @Override
@@ -206,20 +231,21 @@ public class HomeActivity extends MainActivity {
     }
      */
 
-    public class MyAsyncTask extends AsyncTask<String, Integer, ArrayList<news>> {
+    public class MyAsyncTask extends AsyncTask<String, Integer,Integer> {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
-        protected ArrayList<news> doInBackground(String... strings) {
-            newsManager.refresh(HomeActivity.this);
-            return newsManager.newslist;
+        protected Integer doInBackground(String... strings) {
+            datamanager manager=new datamanager();
+            manager.getalldata();
+            return 0;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog.show();
+           // progressDialog.show();
             //    在onPreExecute()中我们让ProgressDialog显示出来
-            //progressDialog.show();
+            progressDialog.show();
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -231,13 +257,14 @@ public class HomeActivity extends MainActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<news> result) {
+        protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
+
             //    将doInBackground方法返回的byte[]解码成要给Bitmap
-            newsAdapter.SetData(newsManager.newslist);
-            newsAdapter.notifyDataSetChanged();
+//            newsAdapter.SetData(newsManager.newslist);
+//            newsAdapter.notifyDataSetChanged();
             //Log.v("listsize",String.valueOf(model.getNewsSize()));
-            progressDialog.dismiss();
+           progressDialog.dismiss();
 
         }
     }
