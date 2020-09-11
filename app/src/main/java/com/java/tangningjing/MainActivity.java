@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         } else if (id == R.id.nav_collection) {
             Toast.makeText(getApplicationContext(), "你点了收藏",
                     Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), ChartActivity.class));
+            startActivity(new Intent(getApplicationContext(), ExpertActivity.class));
+            overridePendingTransition(0,0);
         }
         else if(id==R.id.nav_home){
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));

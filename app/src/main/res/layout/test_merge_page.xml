@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:contentDescription="left image"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:scaleType="fitXY" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:contentDescription="right image"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:scaleType="fitXY" />
 
 </LinearLayout>
